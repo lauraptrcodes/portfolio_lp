@@ -1,3 +1,4 @@
+
 <div class="grid grid-cols-5 gap-4 m-24 relative">
     <div class="col-span-3">
         <!--info-->
@@ -11,7 +12,17 @@
             </p>
         </div>
     </div>
-    <div class="bg-blue-700 h-[480px] mr-[-300px]">
+    <div id="waveAnim" class="bg-blue-700 h-[480px] mr-[-300px]">
         <!--2d wave graphic-->
+        <Canvas>
+            <Scene/>
+        </Canvas>
     </div>
 </div>
+
+
+<script>
+    import { Canvas } from '@threlte/core'
+    import Scene from './Scene.svelte';
+    
+</script>
