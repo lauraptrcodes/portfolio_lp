@@ -10,10 +10,12 @@
             <p class="mt-8">Wer ich bin, was ich mache, wofür ich mich interessiere.
                 <br> Ich programmiere alles und brauche dringend geld, bla bla.
             </p>
+            <ButtonList></ButtonList>
+
         </div>
     </div>
-    <div id="waveAnim" class="bg-blue-700 h-[480px] mr-[-300px]">
-        <!--2d wave graphic-->
+    <div id="waveAnim" class="h-[480px] mr-[-300px] ">
+        <!--2d wave graphic class="bg-blue-700-->
         <Canvas>
             <Scene/>
         </Canvas>
@@ -24,5 +26,5 @@
 <script>
     import { Canvas } from '@threlte/core'
     import Scene from './Scene.svelte';
-    
+    import ButtonList from './ButtonList.svelte';
 </script>
