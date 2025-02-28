@@ -12,7 +12,7 @@
     })
 
     const size = 8;
-    const count = 500;
+    const count = 400;
     const positions = new Float32Array(count * 3);
 
     function calcPositions(){
@@ -21,7 +21,7 @@
        let y = 0;
 
        const vx = x;
-       const vy = Math.sin(60*x + phase) * Math.sin(30*x + phase);
+       const vy = Math.sin(4*x + phase) * Math.sin(3*x + phase);
 
        //x
         positions[i * 3 + 0] = vx - 4;
@@ -36,7 +36,8 @@
 
 </script>
 
-<T.Points>
+
+<T.Line>
   <T.BufferGeometry>
     <T.BufferAttribute
       args={[positions, 3]}
@@ -50,13 +51,6 @@
       }}
     />
   </T.BufferGeometry>
-  <T.PointsMaterial size={0.05} color={0x0442BF} />
-</T.Points>
-<!--
-<T.Mesh rotation.z={rotation}>
-    <T.BoxGeometry />
-
-
-
-
-</T.Mesh>-->
+  <!--size={0.05} -->
+  <T.LineBasicMaterial color={0x0442BF} linewidth={4} />
+</T.Line>

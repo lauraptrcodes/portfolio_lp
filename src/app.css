@@ -1,4 +1,47 @@
 @import 'tailwindcss';
 @import url("https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100..800&display=swap");
 
+@reference "tailwindcss/theme";
+  @theme {
+    --color-portfolio-blue: #0442BF;
+    --color-portfolio-gray: #2c2e33;
+    --color-portfolio-dark: #232833;
+    --color-portfolio-text: #263C6A;
+    --color-portfolio-black: #000000; 
+    --color-portfolio-white: #ffffff;
 
+    --font-martian-mono: "Martian Mono", sans-serif;
+  }
+  :global(html) {
+    background-color: theme(--color-portfolio-white);
+    @font-face {
+      font-family: "Martian Mono", monospace;
+    }
+  }
+  :global(h1){
+    font-family: 'Martian Mono', monospace;
+    font-size: 40px;
+  	color: theme(--color-portfolio-blue);
+  }
+  :global(h2){
+    font-family: 'Martian Mono', monospace;
+    font-size: 32px;
+  	color: theme(--color-portfolio-dark);
+  }
+  :global(h3){
+    font-family: 'Martian Mono', monospace;
+    font-size: 28px;
+  	color: theme(--color-portfolio-gray);
+  }
+  :global(button){
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-blue);
+  }
+  :global(p){
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-text);
+  }
+
+  

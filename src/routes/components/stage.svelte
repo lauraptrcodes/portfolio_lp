@@ -10,8 +10,12 @@
             <p class="mt-8">Wer ich bin, was ich mache, wofür ich mich interessiere.
                 <br> Ich programmiere alles und brauche dringend geld, bla bla.
             </p>
-            <ButtonList></ButtonList>
 
+            <div class="flex gap-3  mt-8">
+                <TextButton text="Say hello" icon="mail"/>
+                <IconButton icon="github"/>
+                <IconButton icon="linkedin"/>
+            </div>
         </div>
     </div>
     <div id="waveAnim" class="h-[480px] mr-[-300px] ">
@@ -26,5 +30,6 @@
 <script>
     import { Canvas } from '@threlte/core'
     import Scene from './Scene.svelte';
-    import ButtonList from './ButtonList.svelte';
+    import TextButton from './TextButton.svelte';
+    import IconButton from './IconButton.svelte';
 </script>

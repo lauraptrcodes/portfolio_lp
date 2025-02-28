@@ -42,9 +42,15 @@
     font-size: 28px;
   	color: theme(--color-portfolio-gray);
   }
+  :global(button > p){
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-blue);
+  }
   :global(p){
     font-family: 'Martian Mono', monospace;
     font-size: 18px;
     color: theme(--color-portfolio-text);
   }
+  
 </style>
