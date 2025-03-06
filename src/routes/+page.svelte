@@ -3,12 +3,16 @@
 
   import Header from "./components/header.svelte";
   import Stage from "./components/stage.svelte";
+  import Projects from './components/projects.svelte';
+  import Skills from './components/skills.svelte';
 </script>
 
 <Header/>
 <Stage/>
+<Projects/>
+<Skills/>
 
-
+<!--contact form-->
 <style lang="postcss">
   @reference "tailwindcss/theme";
   @theme {
@@ -46,6 +50,11 @@
     font-family: 'Martian Mono', monospace;
     font-size: 18px;
     color: theme(--color-portfolio-blue);
+  }
+  :global(.project-card > p){
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-white);
   }
   :global(p){
     font-family: 'Martian Mono', monospace;
