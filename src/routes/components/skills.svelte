@@ -52,9 +52,9 @@
         loader.load("/assets/wireframepc.glb", (gltf) => {
             const model = gltf.scene;
             model.rotateY(5);
-            model.position.set(-3, 0, 0); // Center the model
             pivot.add(model);
-            
+            model.position.set(-3, 2, 0); // Center the model
+
             renderer.render(scene, camera);
         }, undefined, (error) => {
             console.error("Error loading model:", error);
