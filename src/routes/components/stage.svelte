@@ -20,7 +20,7 @@
     </div>
     <div id="waveAnim" class="h-[480px] mr-[-300px] ">
         <!--2d wave graphic class="bg-blue-700-->
-        <Canvas>
+        <Canvas >
             <Scene/>
         </Canvas>
     </div>
