@@ -5,12 +5,14 @@
   import Stage from "./components/stage.svelte";
   import Projects from './components/projects.svelte';
   import Skills from './components/skills.svelte';
+  import Contact from './components/contact.svelte';
 </script>
 
 <Header/>
 <Stage/>
 <Projects/>
 <Skills/>
+<Contact/>
 
 <!--contact form-->
 <style lang="postcss">
