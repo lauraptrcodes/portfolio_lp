@@ -6,6 +6,7 @@
   import Projects from './components/projects.svelte';
   import Skills from './components/skills.svelte';
   import Contact from './components/contact.svelte';
+  import Footer from './components/footer.svelte'
 </script>
 
 <Header/>
@@ -13,12 +14,14 @@
 <Projects/>
 <Skills/>
 <Contact/>
+<Footer/>
 
 <!--contact form-->
 <style lang="postcss">
   @reference "tailwindcss/theme";
   @theme {
     --color-portfolio-blue: #0442BF;
+    --color-portfolio-darkblue: #212B40;
     --color-portfolio-gray: #2c2e33;
     --color-portfolio-dark: #232833;
     --color-portfolio-text: #263C6A;
@@ -58,10 +61,16 @@
     font-size: 18px;
     color: theme(--color-portfolio-white);
   }
-  :global(p){
+  :global(p, label, input, textarea, a){
     font-family: 'Martian Mono', monospace;
     font-size: 18px;
     color: theme(--color-portfolio-text);
   }
-  
+  :global(a){
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-text);
+
+  }
+
 </style>
