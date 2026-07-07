@@ -4,6 +4,7 @@
 @reference "tailwindcss/theme";
   @theme {
     --color-portfolio-blue: #0442BF;
+    --color-portfolio-antiblue: #d9c395;
     --color-portfolio-gray: #2c2e33;
     --color-portfolio-dark: #232833;
     --color-portfolio-text: #263C6A;
@@ -21,7 +22,7 @@
   :global(h1){
     font-family: 'Martian Mono', monospace;
     font-size: 40px;
-  	color: theme(--color-portfolio-blue);
+    color: theme(--color-portfolio-blue);
   }
   :global(h2){
     font-family: 'Martian Mono', monospace;

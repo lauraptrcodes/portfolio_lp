@@ -1,55 +1,161 @@
 <script>
-    import { useTask, T } from '@threlte/core'
+	import { onMount } from 'svelte';
 
-    /*let rotation = 0;
-    useTask((delta) => {
-    rotation += delta
-  })*/
-    let phase = 0;
-    useTask((delta) => {
-      phase += delta * 0.2;
-      calcPositions();
-    })
+    //import { useTask, T } from '@threlte/core';
+    import * as THREE from 'three';
+    import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline';
+    
 
-    const size = 8;
-    const count = 400;
-    const positions = new Float32Array(count * 3);
+     /**
+	 * @type {HTMLDivElement}
+	 */
+    let container;
+     
+    /**
+	 * @type {HTMLCanvasElement}
+	 */
+    let textCanvas;
+    
+    /**
+	 * @type {HTMLElement}
+	 */
+    export let textoverlay;
 
-    function calcPositions(){
-      for (let i = 0; i < count; i++) {
-       let x = (i / count) * 8;
-       let y = 0;
-
-       const vx = x;
-       const vy = Math.sin(4*x + phase) * Math.sin(3*x + phase);
-
-       //x
-        positions[i * 3 + 0] = vx - 4;
-        //y
-        positions[i * 3 + 1] = vy * 4;
-        //z
-        positions[i * 3 + 2] = 0;
-      }
+    async function setTempCanvas(c) {
+      c = await html2canvas(textoverlay);
     }
+    onMount(()=>{
+      let width = window.innerWidth;
+      let height = window.innerHeight;
 
-    calcPositions();
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, 640 / 480, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(width, 480);
+      renderer.setClearAlpha(0.0);
+      renderer.outputColorSpace = THREE.SRGBColorSpace; 
+      renderer.toneMapping = THREE.NoToneMapping; // deaktivieren zum Testen
+      renderer.toneMappingExposure = 1.0;
+      container.appendChild(renderer.domElement);
+      camera.position.z = 2.0;
+      //camera.rotateZ(3*Math.PI/4);
+      
+
+      //.multiplyScalar(4) 
+      let phase = 0;
+      let speed = 0.2;
+      const color = new THREE.Color();
+      color.setStyle('#0442bf', THREE.SRGBColorSpace);
+      
+      const segments = 200;
+      const geometry = new THREE.PlaneGeometry(8, 0.4, segments, 2);
+
+      // ShaderMaterial — animate sine wave in the vertex shader
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          u_time: { value: 0 },
+          u_amplitude: { value: 0.5 },
+          u_wavelength: { value: 2.0 },
+          u_speed: { value: 0.1 },
+          u_color: { value: color},
+          u_pixelSteps: { value: 12.2 }, // pixelation intensity
+          u_noiseScale: { value: 0.6 },   // Frequenz der Verzerrung
+          u_noiseStrength: { value: 0.1 }, // Stärke der Verzerrung (leicht)
+          u_noiseSpeed: { value: 0.15 },  // wie schnell sich die Verzerrung verändert
+        },
+        vertexShader: /* glsl */`
+          uniform float u_time;
+          uniform float u_amplitude;
+          uniform float u_wavelength;
+          uniform float u_speed;
+          uniform float u_pixelSteps;
+          uniform float u_noiseScale;
+          uniform float u_noiseStrength;
+          uniform float u_noiseSpeed;
+
+          vec2 hash(vec2 p) {
+            p = vec2(dot(p, vec2(127.1,311.7)), dot(p, vec2(269.5,183.3)));
+            return -1.0 + 2.0*fract(sin(p)*43758.5453123);
+          }
+
+          float noise(in vec2 p) {
+            const float K1 = 0.366025404;
+            const float K2 = 0.211324865;
+            vec2 i = floor(p + (p.x + p.y) * K1);
+            vec2 a = p - i + (i.x + i.y) * K2;
+            vec2 o = (a.x > a.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+            vec2 b = a - o + K2;
+            vec2 c = a - 1.0 + 2.0 * K2;
+            vec3 h = max(0.5 - vec3(dot(a,a), dot(b,b), dot(c,c)), 0.0);
+            vec3 n = h*h*h*h*vec3(dot(a, hash(i + 0.0)), dot(b, hash(i + o)), dot(c, hash(i + 1.0)));
+            return dot(n, vec3(70.0));
+          }
+          
+          void main() {
+            vec3 pos = position;
+            
+               // eigener "Seed" pro Welle, da alle Klone dasselbe Material/Uniforms teilen
+               // -> modelMatrix[3].y ist der vertikale Versatz jeder einzelnen Welle
+               float seed = modelMatrix[3].y * 13.7;
+            
+               // leichtes, sich langsam veränderndes Rauschen entlang der Welle
+               float n = noise(vec2(pos.x * u_noiseScale + seed, u_time * u_noiseSpeed + seed));
+            
+               // Animate Y position using a sine function
+               float yVal = sin(pos.x * u_wavelength + u_time * u_speed) * u_amplitude;
+            
+               // Rauschen addiert leichte Unregelmäßigkeit, bevor pixelig quantisiert wird
+               pos.y += floor((yVal + n * u_noiseStrength) * u_pixelSteps) / u_pixelSteps;
+                        
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+          }
+        `,
+        fragmentShader: /* glsl */`
+          uniform vec3 u_color;
+          void main() {
+            gl_FragColor = vec4(pow(u_color, vec3(1.0/2.2)),1.0);
+          }
+        `,
+        transparent: true,
+        side: THREE.DoubleSide,
+      });
+      material.toneMapped = false;
+      const wave = new THREE.Mesh(geometry, material);
+      scene.add(wave);
+
+      // Resize handler
+      window.addEventListener("resize", () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+
+      // Animation loop
+      function animate(time) {
+        requestAnimationFrame(animate);
+        
+        renderer.render(scene, camera);
+        material.uniforms.u_time.value = -time * 0.001;
+      }
+
+      animate(0);
+      const numWaves = 5;
+      const waveSpacing = 1.2;
+
+      for (let i = 0; i < numWaves; i++) {
+        const clone = wave.clone();
+        clone.position.y = (i - Math.floor(numWaves / 2)) * waveSpacing; // stack around center
+        scene.add(clone);
+      }
+        
+    });
 </script>
 
 
-<T.Line>
-  <T.BufferGeometry>
-    <T.BufferAttribute
-      args={[positions, 3]}
-      attach={({ parent, ref }) => {
-        parent.setAttribute('position', ref);
-       
-        return () => {
-          // cleanup function called when ref changes or the component unmounts
-          // https://threlte.xyz/docs/reference/core/t#attach
-        }
-      }}
-    />
-  </T.BufferGeometry>
-  <!--size={0.05} -->
-  <T.LineBasicMaterial color={0x0442BF} linewidth={4} />
-</T.Line>
+  <div bind:this={container} class="overflow-hidden absolute h-full -left-[20%] w-[140%] -z-10">
+  <!-- <canvas bind:this={textCanvasi} class="absolute mix-blend-lighter"></canvas>-->
+
+  </div>
+         <!--  <p class="absolute mix-blend-difference !text-[#d9c395]">fgjfdgjfdkgjfkdlgjkldfjk</p>-->
+

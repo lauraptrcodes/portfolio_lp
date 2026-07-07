@@ -6,13 +6,16 @@
   import Projects from './components/projects.svelte';
   import Skills from './components/skills.svelte';
   import Contact from './components/contact.svelte';
+  import Noise from './components/noise.svelte';
   import Footer from './components/footer.svelte'
 </script>
 
 <Header/>
 <Stage/>
 <Projects/>
-<Skills/>
+<!--<Skills/>-->
+<Noise/>
+
 <Contact/>
 <Footer/>
 

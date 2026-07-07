@@ -2,13 +2,14 @@
     import TextButton from './TextButton.svelte';
 </script>
 
-<div class="mx-24">
+<div class="mx-24 relative">
+<div class="w-full mx-auto max-w-6xl">
 <div class="w-full text-center">
     <h1> Get in touch!</h1>
     <p class="mt-6">I'd love to here your ideas and would be excited to start a new project and perhaps learn something new</p>
 </div>
 
-<form method="POST" >
+<form method="POST">
     <div class="grid grid-cols-1 gap-y-6">
         
         
@@ -42,4 +43,5 @@
         </div>
     </div>
 </form>
+</div>
 </div>

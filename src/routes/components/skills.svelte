@@ -1,6 +1,6 @@
 
 
-<div class="grid grid-cols-5 gap-4 m-24 relative">
+<div class="grid grid-cols-5 gap-4 mt-24 relative w-full">
     
     <div class="h-[480px] col-span-3">
         <canvas id="pcAnim" class="absolute top-[50%] -translate-y-1/2 w-[100%] h-[120%]">
@@ -9,8 +9,8 @@
     </div>
     <div class="col-span-2">
         <!--info-->
-        <div class="absolute top-[50%] -translate-y-1/2">
-            <h2 class="leading-7">Skills for your project </h2>
+        <div class="absolute top-[50%] -translate-y-1/2 m-12 mix-blend-darken">
+            <h2 class="leading-7 mix-blend-darken">Skills for your project </h2>
         
             <p class="mt-8"> Wo liegen meine Skills und was für Projekte kann ich mit welchen Technologien umsetzen
             </p>
