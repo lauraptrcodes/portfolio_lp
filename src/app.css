@@ -15,9 +15,13 @@
   }
   :global(html) {
     background-color: theme(--color-portfolio-white);
+    overflow-x: hidden;
     @font-face {
       font-family: "Martian Mono", monospace;
     }
+  }
+  :global(body) {
+    overflow-x: hidden;
   }
   :global(h1){
     font-family: 'Martian Mono', monospace;

@@ -26,7 +26,7 @@
 
             </div>
             <div class="flex gap-3  mt-8 z-10 absolute bottom-8">
-                <TextButton text="Say hello" icon="mail"/>
+                <TextButton text="Say hello" icon="mail"  onclick={() => handleScroll()}/>
                 <IconButton icon="github"/>
                 <IconButton icon="linkedin"/>
             </div>
@@ -40,9 +40,17 @@
     import Scene from './Scene.svelte';
     import TextButton from './TextButton.svelte';
     import IconButton from './IconButton.svelte';
+    import scrollIntoView from 'scroll-into-view-if-needed';
 
-    /**
-	 * @type {HTMLDivElement}
-	 */
-    let textoverlay;
+
+    function handleScroll() {
+		const element = document.getElementById('contactform');
+// 		element.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'start' });
+		scrollIntoView(element,
+		{
+			behavior: 'smooth',
+			block: 'center',
+			//boundary: parent
+		});
+	}
 </script>

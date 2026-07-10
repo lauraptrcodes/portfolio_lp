@@ -1,11 +1,19 @@
 <script>
     import ProjectCard from "./projectCard.svelte";
+    import ProjectModal from "./projectModal.svelte";
 
+    let selectedProject = null;
     let projects = [
-        { title: 'Web Dev with Vue.js', video: '/assets/videos/metallicDelay.mp4' },
-        { title: 'AnnieBox with Angular and Django', video: '' },
-        { title: 'Device Wall with ASP.Net and Angular', video: '' }
+        { title: 'Web Dev with Vue.js', video: '/assets/videos/metallicDelay.mp4', image:'', description: 'djhfksdhfjskdh', technologies: ['svelte', 'C#'] },
+        { title: 'AnnieBox with Angular and Django', video: '/assets/videos/webdevvue.mp4', image:'', description: 'djhfksdhfjskdh', technologies: ['svelte', 'C#'] },
+        { title: 'Device Wall with ASP.Net and Angular', video: '', image:'', description: 'djhfksdhfjskdh', technologies: ['svelte', 'C#'] }
     ];
+    function openProject(project) {
+    selectedProject = project;
+    }
+    function closeProject() {
+        selectedProject = null;
+    }
 </script>
 
 
@@ -28,7 +36,9 @@
 <div class="w-full px-24">
     <div class="relative my-24 mx-auto flex gap-4 w-full max-w-6xl justify-center">
         {#each projects as project}
-            <ProjectCard title={project.title} video={project.video}></ProjectCard>
+            <ProjectCard {project} onSelect={openProject}></ProjectCard>
         {/each}
     </div>
 </div>
+
+<ProjectModal project={selectedProject} onClose={closeProject} />

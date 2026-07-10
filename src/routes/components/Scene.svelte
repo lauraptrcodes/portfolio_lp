@@ -25,24 +25,20 @@
       c = await html2canvas(textoverlay);
     }
     onMount(()=>{
-      let width = window.innerWidth;
-      let height = window.innerHeight;
+      let width = container.clientWidth;
+      let height = container.clientHeight;
 
 
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, 640 / 480, 0.1, 1000);
+      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer();
-      renderer.setSize(width, 480);
+      renderer.setSize(width, height);
       renderer.setClearAlpha(0.0);
-      renderer.outputColorSpace = THREE.SRGBColorSpace; 
-      renderer.toneMapping = THREE.NoToneMapping; // deaktivieren zum Testen
-      renderer.toneMappingExposure = 1.0;
+      
       container.appendChild(renderer.domElement);
       camera.position.z = 2.0;
       //camera.rotateZ(3*Math.PI/4);
       
-
-      //.multiplyScalar(4) 
       let phase = 0;
       let speed = 0.2;
       const color = new THREE.Color();
@@ -55,14 +51,15 @@
       const material = new THREE.ShaderMaterial({
         uniforms: {
           u_time: { value: 0 },
-          u_amplitude: { value: 0.5 },
+          u_amplitude: { value: 0.4 },
           u_wavelength: { value: 2.0 },
           u_speed: { value: 0.1 },
           u_color: { value: color},
-          u_pixelSteps: { value: 12.2 }, // pixelation intensity
+          u_pixelSteps: { value: 14.2 }, // pixelation intensity
+          u_pixelStepsX: { value: 22.2 }, // pixelation intensity (X-Achse, neu)
           u_noiseScale: { value: 0.6 },   // Frequenz der Verzerrung
           u_noiseStrength: { value: 0.1 }, // Stärke der Verzerrung (leicht)
-          u_noiseSpeed: { value: 0.15 },  // wie schnell sich die Verzerrung verändert
+          u_noiseSpeed: { value: 0.25 },  // wie schnell sich die Verzerrung verändert
         },
         vertexShader: /* glsl */`
           uniform float u_time;
@@ -70,6 +67,7 @@
           uniform float u_wavelength;
           uniform float u_speed;
           uniform float u_pixelSteps;
+          uniform float u_pixelStepsX;
           uniform float u_noiseScale;
           uniform float u_noiseStrength;
           uniform float u_noiseSpeed;
@@ -94,20 +92,22 @@
           
           void main() {
             vec3 pos = position;
+            //X-Achse rastern (analog zu Noise's floor(uv * uPixelSize)/uPixelSize)
+            float snappedX = floor(pos.x * u_pixelStepsX) / u_pixelStepsX;
             
                // eigener "Seed" pro Welle, da alle Klone dasselbe Material/Uniforms teilen
                // -> modelMatrix[3].y ist der vertikale Versatz jeder einzelnen Welle
                float seed = modelMatrix[3].y * 13.7;
             
                // leichtes, sich langsam veränderndes Rauschen entlang der Welle
-               float n = noise(vec2(pos.x * u_noiseScale + seed, u_time * u_noiseSpeed + seed));
+               float n = noise(vec2(snappedX * u_noiseScale + seed, u_time * u_noiseSpeed + seed));
             
                // Animate Y position using a sine function
-               float yVal = sin(pos.x * u_wavelength + u_time * u_speed) * u_amplitude;
+               float yVal = sin(snappedX * u_wavelength + u_time * u_speed) * u_amplitude;
             
                // Rauschen addiert leichte Unregelmäßigkeit, bevor pixelig quantisiert wird
                pos.y += floor((yVal + n * u_noiseStrength) * u_pixelSteps) / u_pixelSteps;
-                        
+               pos.x = snappedX;         
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
           }
         `,
@@ -120,35 +120,47 @@
         transparent: true,
         side: THREE.DoubleSide,
       });
-      material.toneMapped = false;
       const wave = new THREE.Mesh(geometry, material);
       scene.add(wave);
 
       // Resize handler
-      window.addEventListener("resize", () => {
+      function handleResize() {
         camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);
-      });
+      }
+      window.addEventListener("resize", handleResize);
+
+      const numWaves = 5;
+      const waveSpacing = 1.0;
+      for (let i = 0; i < numWaves; i++) {
+        const clone = wave.clone();
+        clone.position.y = (i - Math.floor(numWaves / 2)) * waveSpacing; // stack around center
+        scene.add(clone);
+      }
 
       // Animation loop
+      let animationId;
       function animate(time) {
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
+        //requestAnimationFrame(animate);
         
         renderer.render(scene, camera);
         material.uniforms.u_time.value = -time * 0.001;
       }
 
       animate(0);
-      const numWaves = 5;
-      const waveSpacing = 1.2;
 
-      for (let i = 0; i < numWaves; i++) {
-        const clone = wave.clone();
-        clone.position.y = (i - Math.floor(numWaves / 2)) * waveSpacing; // stack around center
-        scene.add(clone);
-      }
-        
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        cancelAnimationFrame(animationId);
+        renderer.dispose();
+        geometry.dispose();
+        material.dispose();
+        if (renderer.domElement.parentElement === container) {
+          container.removeChild(renderer.domElement);
+        }
+      };
     });
 </script>
 

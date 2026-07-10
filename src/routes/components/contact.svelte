@@ -2,7 +2,7 @@
     import TextButton from './TextButton.svelte';
 </script>
 
-<div class="mx-24 relative">
+<div id="contactform" class="mx-24 relative">
 <div class="w-full mx-auto max-w-6xl">
 <div class="w-full text-center">
     <h1> Get in touch!</h1>
