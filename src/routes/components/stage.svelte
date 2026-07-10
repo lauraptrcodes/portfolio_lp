@@ -26,7 +26,7 @@
 
             </div>
             <div class="flex gap-3  mt-8 z-10 absolute bottom-8">
-                <TextButton text="Say hello" icon="mail"  onclick={() => handleScroll()}/>
+                <TextButton text="Say hello" icon="mail"  on:click={() => handleScroll()}/>
                 <IconButton icon="github"/>
                 <IconButton icon="linkedin"/>
             </div>

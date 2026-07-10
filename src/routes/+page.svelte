@@ -8,6 +8,8 @@
   import Contact from './components/contact.svelte';
   import Noise from './components/noise.svelte';
   import Footer from './components/footer.svelte'
+
+  export let form;
 </script>
 
 <Header/>
@@ -16,7 +18,7 @@
 <!--<Skills/>-->
 <Noise/>
 
-<Contact/>
+<Contact {form}/>
 <Footer/>
 
 <!--contact form-->

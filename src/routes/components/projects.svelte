@@ -34,7 +34,7 @@
  </svg>
 
 <div class="w-full px-24">
-    <div class="relative my-24 mx-auto flex gap-4 w-full max-w-6xl justify-center">
+    <div class="relative my-24 mx-auto flex flex-col md:flex-row flex-wrap gap-4 w-full max-w-6xl justify-items-center justify-center">
         {#each projects as project}
             <ProjectCard {project} onSelect={openProject}></ProjectCard>
         {/each}

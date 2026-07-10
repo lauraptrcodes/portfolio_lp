@@ -7,7 +7,7 @@
     let pressed = false;
 </script>
 
-<button on:mousedown={()=>pressed = true } on:mouseup={() => pressed = false} 
+<button on:click on:mousedown={()=>pressed = true } on:mouseup={() => pressed = false} 
     class="
         group border-3
         hover:bg-[#212B40] 
