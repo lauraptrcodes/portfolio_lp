@@ -9,20 +9,13 @@
 	 * @type {HTMLDivElement}
 	 */
     let container;
-     
-    /**
-	 * @type {HTMLCanvasElement}
-	 */
-    let textCanvas;
-    
-    /**
-	 * @type {HTMLElement}
-	 */
-    export let textoverlay;
 
-    async function setTempCanvas(c) {
-      c = await html2canvas(textoverlay);
-    }
+
+    // Ruft bei jedem Snapshot mit der aktuellen Canvas als Data-URL auf
+    export let onSnapshot = () => {};
+    // Wie oft (in ms) ein neuer Snapshot gezogen wird
+    export let snapshotInterval = 120;
+
     onMount(()=>{
       let width = container.clientWidth;
       let height = container.clientHeight;
@@ -32,9 +25,10 @@
       const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10);
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(width, height);
-      renderer.setClearAlpha(0.0);
+      renderer.setClearColor(0xffffff, 1);
       
       container.appendChild(renderer.domElement);
+      renderer.domElement.style.opacity = '0';
       camera.position.z = 2.0;
       //camera.rotateZ(3*Math.PI/4);
 
@@ -131,7 +125,7 @@
         side: THREE.DoubleSide,
       });
       const wave = new THREE.Mesh(geometry, material);
-      //scene.add(wave);
+      scene.add(wave);
       const waveMeshes = [wave];
 
       // Resize handler
@@ -141,7 +135,8 @@
         renderer.setSize(container.clientWidth, container.clientHeight);
         planeWidth = getVisibleWidthAtZ0();
         const newGeometry = new THREE.PlaneGeometry(
-          planeWidth, 0.4, Math.max(2, Math.round(planeWidth * segmentsPerUnit)), 2);
+          planeWidth, 0.4, Math.max(2, Math.round(planeWidth * segmentsPerUnit)), 2
+);
         geometry.dispose();
         geometry = newGeometry;
         waveMeshes.forEach((m) => { m.geometry = geometry; });
@@ -159,11 +154,16 @@
       // Animation loop
       let animationId;
       function animate(time) {
+        let lastSnapshotTime = 0;
         animationId = requestAnimationFrame(animate);
         //requestAnimationFrame(animate);
         
         renderer.render(scene, camera);
         material.uniforms.u_time.value = -time * 0.001;
+        if (time - lastSnapshotTime >= snapshotInterval) {
+         lastSnapshotTime = time;
+         onSnapshot(renderer.domElement.toDataURL('image/png'));
+       }
       }
 
       animate(0);
