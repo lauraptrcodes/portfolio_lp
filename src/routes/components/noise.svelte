@@ -1,6 +1,6 @@
 <script>
     import * as THREE from 'three';
-	  import { onDestroy, onMount } from 'svelte';
+	  import { onMount } from 'svelte';
 
     /**
 	 * @type {HTMLDivElement}
@@ -16,8 +16,6 @@
     const smoothMouse = new THREE.Vector2(0.5, 0.5);
     let animationId;
 
-    
-    
       // Scene setup
       onMount(()=>{
         const parent = canvas;
@@ -43,14 +41,13 @@
         renderer.setClearColor(0x222222, 1);
         canvas.appendChild(renderer.domElement);   
 
-        
-
-        container.addEventListener('mousemove', function onMouseMove(event){
+        function onMouseMove(event) {
           const rect = canvas.getBoundingClientRect();
-          mouse.x = (event.clientX - rect.left)/ rect.width;
-          mouse.y = 1.0 - (event.clientY - rect.top) / rect.height;  
-        });
-        
+          mouse.x = (event.clientX - rect.left) / rect.width;
+          mouse.y = 1.0 - (event.clientY - rect.top) / rect.height;
+        }
+        window.addEventListener('mousemove', onMouseMove);
+ 
       // Shader material
         const material = new THREE.ShaderMaterial({
         uniforms: {
@@ -152,22 +149,16 @@
           renderer.setSize(w, h);
           renderer.setPixelRatio(window.devicePixelRatio);
 
-         
-          const camera = new THREE.OrthographicCamera(
-            -w / 2,  // left
-            w / 2,  // right
-            h / 2,  // top
-            -h / 2,  // bottom
-            0.1,    // near
-            10      // far
-          );
+          camera.left = -w / 2;
+          camera.right = w / 2;
+          camera.top = h / 2;
+          camera.bottom = -h / 2;
 
           camera.position.z = 1;
           camera.updateProjectionMatrix();
           plane.scale.set(w, h, 1);
           //console.log(plane.getWorldScale());
           material.uniforms.uResolution.value.set(w, h);
-          console.log(material.uniforms.uResolution.value);
         }
         
         function animate(time) {
@@ -190,13 +181,10 @@
 
         return () => {
           observer.disconnect();
+          window.removeEventListener('mousemove', onMouseMove);
+          if (animationId) cancelAnimationFrame(animationId);
         }
       });
-      
-      onDestroy(() => {
-       canvas?.removeEventListener('mousemove', onMouseMove);
-       if (animationId) cancelAnimationFrame(animationId);
-     });
 
      
 

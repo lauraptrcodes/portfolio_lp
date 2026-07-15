@@ -6,8 +6,8 @@
 	<div class="flex mx-22 mt-22 mb-8 justify-between">
 	    <div class="flex items-center gap-2">
 	        <IconButton icon="mail"/>
-	        <IconButton icon="github"/>
-	        <IconButton icon="linkedin"/>
+	        <IconButton icon="github" link="https://github.com/lauraptrcodes"/>
+	        <IconButton icon="linkedin" link="https://www.linkedin.com/in/laura-peter-53a28123a/"/>
 	        <IconButton icon="coffee"/>
 	    </div>
 	    <div class="grid grid-cols-1 text-right justify-items-stretch">

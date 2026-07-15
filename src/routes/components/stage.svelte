@@ -27,8 +27,8 @@
             </div>
             <div class="flex gap-3  mt-8 z-10 absolute bottom-8">
                 <TextButton text="Say hello" icon="mail"  on:click={() => handleScroll()}/>
-                <IconButton icon="github"/>
-                <IconButton icon="linkedin"/>
+                <IconButton icon="github" link="https://github.com/lauraptrcodes"/>
+                <IconButton icon="linkedin" link="https://www.linkedin.com/in/laura-peter-53a28123a/"/>
             </div>
         </div>
     </div>

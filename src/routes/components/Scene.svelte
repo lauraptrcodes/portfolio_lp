@@ -3,7 +3,6 @@
 
     //import { useTask, T } from '@threlte/core';
     import * as THREE from 'three';
-    import { MeshLine, MeshLineMaterial, MeshLineRaycast } from 'three.meshline';
     
 
      /**
@@ -30,7 +29,7 @@
 
 
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 10);
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(width, height);
       renderer.setClearAlpha(0.0);
@@ -38,14 +37,25 @@
       container.appendChild(renderer.domElement);
       camera.position.z = 2.0;
       //camera.rotateZ(3*Math.PI/4);
+
+      function getVisibleWidthAtZ0() {
+        const distance = camera.position.z;
+        const vFov = camera.fov * Math.PI / 180;
+        const visibleHeight = 2 * Math.tan(vFov / 2) * distance;
+        return visibleHeight * camera.aspect;
+      }
       
       let phase = 0;
       let speed = 0.2;
       const color = new THREE.Color();
       color.setStyle('#0442bf', THREE.SRGBColorSpace);
       
-      const segments = 200;
-      const geometry = new THREE.PlaneGeometry(8, 0.4, segments, 2);
+      
+      // Segmente pro Welteinheit
+      const segmentsPerUnit = 25;
+
+      let planeWidth = getVisibleWidthAtZ0();
+      let geometry = new THREE.PlaneGeometry(planeWidth, 0.4, Math.max(2, Math.round(planeWidth * segmentsPerUnit)), 2);
 
       // ShaderMaterial — animate sine wave in the vertex shader
       const material = new THREE.ShaderMaterial({
@@ -121,13 +131,20 @@
         side: THREE.DoubleSide,
       });
       const wave = new THREE.Mesh(geometry, material);
-      scene.add(wave);
+      //scene.add(wave);
+      const waveMeshes = [wave];
 
       // Resize handler
       function handleResize() {
         camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);
+        planeWidth = getVisibleWidthAtZ0();
+        const newGeometry = new THREE.PlaneGeometry(
+          planeWidth, 0.4, Math.max(2, Math.round(planeWidth * segmentsPerUnit)), 2);
+        geometry.dispose();
+        geometry = newGeometry;
+        waveMeshes.forEach((m) => { m.geometry = geometry; });
       }
       window.addEventListener("resize", handleResize);
 
