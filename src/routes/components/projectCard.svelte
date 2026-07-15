@@ -23,6 +23,8 @@
                 style="filter: url(#duotone-blue);"
             ></video>
         {/if}
-        <p class="absolute bottom-2 p-4 text-portfolio-white">{project.title}</p>
+        <div class="absolute bottom-2 p-4">
+            <p class=" !text-portfolio-white bg-portfolio-blue">{project.title}</p>
+        </div>
     </div>
 </div>

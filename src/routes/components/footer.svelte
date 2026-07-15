@@ -11,7 +11,7 @@
 	        <IconButton icon="coffee"/>
 	    </div>
 	    <div class="grid grid-cols-1 text-right justify-items-stretch">
-	    	<a href="" class="underline text-portfolio-white justify-self-end hover:bg-portfolio-blue hover:text-portfolio-white">Imprint</a>
+	    	<a href="#" class="underline text-portfolio-white justify-self-end hover:bg-portfolio-blue hover:text-portfolio-white">Imprint</a>
 	    	<p class="text-portfolio-white">
 	    		© Laura Peter, 2025
 	    	</p>

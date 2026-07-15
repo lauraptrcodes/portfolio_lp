@@ -29,7 +29,11 @@
 	},
 	"dependencies": {
 		"@threlte/core": "^8.0.1",
+		"html2canvas": "^1.4.1",
 		"portfolio": "file:",
-		"three": "^0.173.0"
+		"resend": "^6.17.2",
+		"scroll-into-view-if-needed": "^3.1.0",
+		"three": "^0.173.0",
+		"three.meshline": "^1.4.0"
 	}
 }
