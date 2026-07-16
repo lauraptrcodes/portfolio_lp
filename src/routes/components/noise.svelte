@@ -1,6 +1,7 @@
 <script>
     import * as THREE from 'three';
 	  import { onMount } from 'svelte';
+    import MaskedText from './MaskedText.svelte';
 
     /**
 	 * @type {HTMLDivElement}
@@ -16,6 +17,13 @@
     const smoothMouse = new THREE.Vector2(0.5, 0.5);
     let animationId;
 
+    // Data-URL eines periodischen Canvas-Snapshots, den MaskedText für die
+    // Text-Maskierung nutzt (die sichtbare Canvas selbst bleibt unverändert live)
+    let noiseSnapshot = '';
+    const snapshotInterval = 120;
+
+    
+    
       // Scene setup
       onMount(()=>{
         const parent = canvas;
@@ -32,14 +40,14 @@
         );
 
         camera.position.z = 1;
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setClearAlpha(0.0);
+        const renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: true });
         // Pixel size control
         const pixelSize = 80.0;
 
-        //renderer.setSize(1200, 940);
-        renderer.setClearColor(0x222222, 1);
+        renderer.setClearColor(0x000000, 0); // transparent statt deckend dunkelgrau
         canvas.appendChild(renderer.domElement);   
+
+        
 
         function onMouseMove(event) {
           const rect = canvas.getBoundingClientRect();
@@ -47,7 +55,7 @@
           mouse.y = 1.0 - (event.clientY - rect.top) / rect.height;
         }
         window.addEventListener('mousemove', onMouseMove);
- 
+        
       // Shader material
         const material = new THREE.ShaderMaterial({
         uniforms: {
@@ -153,14 +161,13 @@
           camera.right = w / 2;
           camera.top = h / 2;
           camera.bottom = -h / 2;
-
-          camera.position.z = 1;
           camera.updateProjectionMatrix();
+
           plane.scale.set(w, h, 1);
-          //console.log(plane.getWorldScale());
           material.uniforms.uResolution.value.set(w, h);
         }
         
+        let lastSnapshotTime = 0;
         function animate(time) {
           animationId = requestAnimationFrame(animate);
           
@@ -175,6 +182,11 @@
           //material.uniforms.uTime.value = time * 0.0005;
           renderer.render(scene, camera);
           //requestAnimationFrame(animate);
+
+          if (time - lastSnapshotTime >= snapshotInterval) {
+            lastSnapshotTime = time;
+            noiseSnapshot = renderer.domElement.toDataURL('image/png');
+          }
         }
 
         animate(0);
@@ -186,13 +198,25 @@
         }
       });
 
-     
 
 </script>
-<div class="relative my-24">
+<div class="my-24 relative">
 
   <div bind:this={container} class="h-[480px] relative overflow-visible w-full lg:max-w-6xl mx-auto">
-    <div bind:this={canvas} class="overflow-hidden absolute h-full -left-[20%]  w-[140%] -z-10 flex justify-center">
+    <div bind:this={canvas} class="overflow-hidden absolute h-full -left-[20%] w-[140%] -z-10 flex justify-center">
+    </div>
+
+    <div class="w-full max-w-6xl flex flex-col relative h-full mx-auto px-6 lg:px-0">
+        <MaskedText
+            snapshot={noiseSnapshot}
+            bgElement={canvas}
+            wrapperClass="absolute top-[50%] -translate-y-1/2 right-0 text-right p-6"
+            let:colorClass
+        >
+            <h2 class="mb-4 {colorClass}">User centered Design</h2>
+            <h3 class="mb-4 {colorClass}">Was mich antreibt</h3>
+            <p class="mt-4 {colorClass}">Neugier, gutes Design und der Drang, Dinge<br>zu bauen, die es so noch nicht gibt.</p>
+        </MaskedText>
     </div>
   </div>
 </div>
