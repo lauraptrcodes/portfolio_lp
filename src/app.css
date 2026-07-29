@@ -12,6 +12,14 @@
     --color-portfolio-white: #ffffff;
 
     --font-martian-mono: "Martian Mono", sans-serif;
+
+    --spacing-page-x: 1.5rem;
+    --spacing-page-x-md: 2rem;
+    --spacing-page-x-lg: 1rem;
+
+    --spacing-section-y: 4rem;
+    --spacing-section-y-md: 5rem;
+    --spacing-section-y-lg: 6rem;
   }
   :global(html) {
     background-color: theme(--color-portfolio-white);

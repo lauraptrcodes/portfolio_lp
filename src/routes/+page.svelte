@@ -7,18 +7,20 @@
   import Skills from './components/skills.svelte';
   import Contact from './components/contact.svelte';
   import Noise from './components/noise.svelte';
-  import Footer from './components/footer.svelte'
+  import Footer from './components/footer.svelte';
 
+  import Section from './components/Section.svelte';
   export let form;
 </script>
 
-<Header/>
+<!--<Header/>-->
 <Stage/>
-<Projects/>
+<Section> <Projects/> </Section>
+
 <!--<Skills/>-->
 <Noise/>
+<Section> <Contact {form}/> </Section>
 
-<Contact {form}/>
 <Footer/>
 
 <!--contact form-->

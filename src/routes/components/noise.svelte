@@ -2,7 +2,7 @@
     import * as THREE from 'three';
 	  import { onMount } from 'svelte';
     import MaskedText from './MaskedText.svelte';
-
+    import Section from './Section.svelte';
     /**
 	 * @type {HTMLDivElement}
 	 */
@@ -200,9 +200,8 @@
 
 
 </script>
-<div class="my-24 relative">
+<Section className="h-[480px] overflow-visible">
 
-  <div bind:this={container} class="h-[480px] relative overflow-visible w-full lg:max-w-6xl mx-auto">
     <div bind:this={canvas} class="overflow-hidden absolute h-full -left-[20%] w-[140%] -z-10 flex justify-center">
     </div>
 
@@ -218,5 +217,4 @@
             <p class="mt-4 {colorClass}">Neugier, gutes Design und der Drang, Dinge<br>zu bauen, die es so noch nicht gibt.</p>
         </MaskedText>
     </div>
-  </div>
-</div>
+</Section>

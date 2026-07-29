@@ -5,7 +5,7 @@
     export let form;
 </script>
 
-<div id="contactform" class="mx-24 relative">
+<div id="contactform">
 <div class="w-full mx-auto max-w-6xl">
 <div class="w-full text-center">
     <h1> Get in touch!</h1>

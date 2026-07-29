@@ -1,6 +1,5 @@
 <!--<div class="grid grid-cols-5 gap-4 m-24 relative">-->
-<div class="my-24 relative ">
-    <div class="h-[480px] relative overflow-visible w-full lg:max-w-6xl lg:mx-auto isolate">
+<Section className="isolate h-[480px] overflow-visible">
         <!--info-->
         <Scene onSnapshot={(url) => waveSnapshot = url}/>
         <!-- Periodisch aktualisiertes Abbild der Wave-Canvas als echtes DOM-Element,
@@ -33,8 +32,7 @@
                 <IconButton icon="linkedin"/>
             </div>
         </div>
-    </div>
-</div>
+</Section>
 
 
 <script>
@@ -46,6 +44,7 @@
     import IconButton from './IconButton.svelte';
     import scrollIntoView from 'scroll-into-view-if-needed';
     import MaskedText from './MaskedText.svelte';
+    import Section from './Section.svelte';
 
     // Data-URL des periodischen Wave-Canvas-Snapshots (siehe Scene.svelte)
     let waveSnapshot = '';
