@@ -1,5 +1,5 @@
 <!--<div class="grid grid-cols-5 gap-4 m-24 relative">-->
-<Section className="isolate h-[480px] overflow-visible">
+<Section className="isolate !mt-0 h-[480px] overflow-visible">
         <!--info-->
         <Scene onSnapshot={(url) => waveSnapshot = url}/>
         <!-- Periodisch aktualisiertes Abbild der Wave-Canvas als echtes DOM-Element,
