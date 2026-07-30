@@ -23,19 +23,8 @@
 
 <!--contact form-->
 <style lang="postcss">
-  @reference "tailwindcss/theme";
-  @theme {
-    --color-portfolio-blue: #0442BF;
-    --color-portfolio-darkblue: #212B40;
-    --color-portfolio-gray: #2c2e33;
-    --color-portfolio-dark: #232833;
-    --color-portfolio-text: #263C6A;
-    --color-portfolio-black: #000000; 
-    --color-portfolio-white: #ffffff;
-
-    --font-martian-mono: "Martian Mono", sans-serif;
-  }
-  :global(html) {
+  
+  /*:global(html) {
     background-color: theme(--color-portfolio-white); 
     font-size: 16px;
     @font-face {
@@ -77,7 +66,7 @@
     font-size: 18px;
     color: theme(--color-portfolio-text);
 
-  }
+  }*/
 
   @media(min-width: 768px){
     :global(h2){

@@ -19,7 +19,7 @@
                 let:colorClass
             >
                 <h3 class="mb-4 {colorClass}">Hi, I'm Laura</h3>
-                <h2 class="leading-7 !lg:text-7xl {colorClass}">Software engineer <br>& creative developer 
+                <h2 class="{colorClass}">Software engineer <br>& creative developer 
                 </h2>
 
                 <p class="mt-8 {colorClass}">Wer ich bin, was ich mache, wofür ich mich interessiere.

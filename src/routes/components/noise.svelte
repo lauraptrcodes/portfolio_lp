@@ -213,8 +213,8 @@
               wrapperClass="absolute top-[50%] -translate-y-1/2 right-0 text-right p-6"
               let:colorClass
           >
-              <h2 class="mb-4 {colorClass}">User centered Design</h2>
               <h3 class="mb-4 {colorClass}">Was mich antreibt</h3>
+              <h2 class="mb-4 {colorClass}">User centered Design</h2>
               <p class="mt-4 {colorClass}">Neugier, gutes Design und der Drang, Dinge<br>zu bauen, die es so noch nicht gibt.</p>
           </MaskedText>
       </div>

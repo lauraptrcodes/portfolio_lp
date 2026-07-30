@@ -21,7 +21,7 @@
     --spacing-section-y-md: 5rem;
     --spacing-section-y-lg: 6rem;
   }
-  :global(html) {
+  html {
     background-color: theme(--color-portfolio-white);
     overflow-x: hidden;
     @font-face {
@@ -29,33 +29,62 @@
       font-size: 14px;
     }
   }
-  :global(body) {
+  body {
     overflow-x: hidden;
   }
-  :global(h1){
+  h1{
     font-family: 'Martian Mono', monospace;
     font-size: 40px;
     color: theme(--color-portfolio-blue);
   }
-  :global(h2){
+  h2{
     font-family: 'Martian Mono', monospace;
     font-size: 32px;
+    line-height: 28px;
   	color: theme(--color-portfolio-dark);
   }
-  :global(h3){
+  h3{
     font-family: 'Martian Mono', monospace;
     font-size: 28px;
   	color: theme(--color-portfolio-gray);
   }
-  :global(button){
+  button{
     font-family: 'Martian Mono', monospace;
     font-size: 18px;
     color: theme(--color-portfolio-blue);
   }
-  :global(p){
+  p{
     font-family: 'Martian Mono', monospace;
     font-size: 18px;
     color: theme(--color-portfolio-text);
   }
 
+  button > p{
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-blue);
+  }
+  .project-card > p{
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-white);
+  }
+  p, label, input, textarea, a{
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-text);
+  }
+  a{
+    font-family: 'Martian Mono', monospace;
+    font-size: 18px;
+    color: theme(--color-portfolio-text);
+
+  }
+
+  @media (min-width: 768px) { /*ab lg*/
+    h2 {
+        line-height: 48px;
+        font-size: 3rem;
+    }
+  } 
   
