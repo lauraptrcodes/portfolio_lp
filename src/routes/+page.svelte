@@ -16,11 +16,9 @@
 <!--<Header/>-->
 <Stage/>
 <Section> <Projects/> </Section>
-
 <!--<Skills/>-->
 <Noise/>
 <Section> <Contact {form}/> </Section>
-
 <Footer/>
 
 <!--contact form-->
@@ -38,7 +36,8 @@
     --font-martian-mono: "Martian Mono", sans-serif;
   }
   :global(html) {
-    background-color: theme(--color-portfolio-white);
+    background-color: theme(--color-portfolio-white); 
+    font-size: 16px;
     @font-face {
       font-family: "Martian Mono", monospace;
     }
@@ -78,6 +77,12 @@
     font-size: 18px;
     color: theme(--color-portfolio-text);
 
+  }
+
+  @media(min-width: 768px){
+    :global(h2){
+      font-size: 64px;
+    }
   }
 
 </style>

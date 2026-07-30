@@ -1,4 +1,5 @@
 <!--<div class="grid grid-cols-5 gap-4 m-24 relative">-->
+<div class="overflow-hidden">
 <Section className="isolate !mt-0 h-[480px] overflow-visible">
         <!--info-->
         <Scene onSnapshot={(url) => waveSnapshot = url}/>
@@ -18,7 +19,7 @@
                 let:colorClass
             >
                 <h3 class="mb-4 {colorClass}">Hi, I'm Laura</h3>
-                <h2 class="leading-7 {colorClass}">Software engineer <br>& creative developer 
+                <h2 class="leading-7 !lg:text-7xl {colorClass}">Software engineer <br>& creative developer 
                 </h2>
 
                 <p class="mt-8 {colorClass}">Wer ich bin, was ich mache, wofür ich mich interessiere.
@@ -33,6 +34,8 @@
             </div>
         </div>
 </Section>
+</div>
+
 
 
 <script>

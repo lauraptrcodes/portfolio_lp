@@ -200,21 +200,23 @@
 
 
 </script>
-<Section className="h-[480px] overflow-visible">
+<div class="overflow-hidden">
+  <Section className="h-[480px] overflow-visible">
 
-    <div bind:this={canvas} class="overflow-hidden absolute h-full -left-[20%] w-[140%] -z-10 flex justify-center">
-    </div>
+      <div bind:this={canvas} class="overflow-hidden absolute h-full -left-[20%] w-[140%] -z-10 flex justify-center">
+      </div>
 
-    <div class="w-full max-w-6xl flex flex-col relative h-full mx-auto px-6 lg:px-0">
-        <MaskedText
-            snapshot={noiseSnapshot}
-            bgElement={canvas}
-            wrapperClass="absolute top-[50%] -translate-y-1/2 right-0 text-right p-6"
-            let:colorClass
-        >
-            <h2 class="mb-4 {colorClass}">User centered Design</h2>
-            <h3 class="mb-4 {colorClass}">Was mich antreibt</h3>
-            <p class="mt-4 {colorClass}">Neugier, gutes Design und der Drang, Dinge<br>zu bauen, die es so noch nicht gibt.</p>
-        </MaskedText>
-    </div>
-</Section>
+      <div class="w-full max-w-6xl flex flex-col relative h-full mx-auto px-6 lg:px-0">
+          <MaskedText
+              snapshot={noiseSnapshot}
+              bgElement={canvas}
+              wrapperClass="absolute top-[50%] -translate-y-1/2 right-0 text-right p-6"
+              let:colorClass
+          >
+              <h2 class="mb-4 {colorClass}">User centered Design</h2>
+              <h3 class="mb-4 {colorClass}">Was mich antreibt</h3>
+              <p class="mt-4 {colorClass}">Neugier, gutes Design und der Drang, Dinge<br>zu bauen, die es so noch nicht gibt.</p>
+          </MaskedText>
+      </div>
+  </Section>
+</div>

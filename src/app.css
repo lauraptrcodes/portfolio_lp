@@ -26,6 +26,7 @@
     overflow-x: hidden;
     @font-face {
       font-family: "Martian Mono", monospace;
+      font-size: 14px;
     }
   }
   :global(body) {
