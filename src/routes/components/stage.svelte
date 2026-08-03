@@ -27,7 +27,7 @@
                     <br> Ich mag Projekte, bei denen Technik und Kreativität sich nicht ausschließen müssen.
             </MaskedText>
 
-            <div class="flex gap-3  mt-8 z-10 absolute md:bottom-8 bottom-6">
+            <div class="flex gap-3  mt-8 z-10 absolute min-[500px]:bottom-6 bottom-4">
                 <TextButton text="Say hello" icon="mail" on:click={() => handleScroll()}/>                
                 <IconButton icon="github"/>
                 <IconButton icon="linkedin"/>

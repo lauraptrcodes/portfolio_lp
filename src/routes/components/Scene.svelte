@@ -9,7 +9,7 @@
     export let onSnapshot = () => {};
     // Wie oft (in ms) ein neuer Snapshot gezogen wird
     export let snapshotInterval = (typeof window !== 'undefined' && 'ontouchstart' in window) ? 
-    350 : 120;
+    500 : 120;
 
     // --- Konfiguration der Welle ---
     const WAVE_COLOR = '#0442bf';
