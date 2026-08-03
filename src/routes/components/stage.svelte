@@ -2,7 +2,7 @@
 <div class="overflow-hidden">
 <Section className="isolate !mt-0 h-[480px] overflow-visible">
         <!--info-->
-        <Scene onSnapshot={(url) => waveSnapshot = url}/>
+        <Scene onSnapshot={handleSnapshot}/>
         <!-- Periodisch aktualisiertes Abbild der Wave-Canvas als echtes DOM-Element,
              damit die Maske zuverlässig dagegen ausgerichtet werden kann (Live-Canvas
              ist dafür browserübergreifend inkonsistent) -->
@@ -54,6 +54,24 @@
 
     /** @type {HTMLDivElement} */
     let waveBgDiv;
+
+    async function handleSnapshot(url) {
+        const img = new Image();
+        img.src = url;
+        try {
+            if (img.decode) {
+                await img.decode();
+            } else {
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                });
+            }
+        } catch (e) {
+            // Decode fehlgeschlagen — trotzdem anzeigen, besser als gar nichts
+        }
+        waveSnapshot = url;
+    }
 
     function handleScroll() {
 		const element = document.getElementById('contactform');

@@ -81,7 +81,7 @@
 
   }
 
-  @media (min-width: 768px) { /*ab lg*/
+  @media (min-width: 786px) { /*ab lg*/
     h2 {
         line-height: 48px;
         font-size: 3rem;
