@@ -22,8 +22,8 @@
     let noiseSnapshot = '';
     const snapshotInterval = 120;
 
-    
-    
+
+
       // Scene setup
       onMount(()=>{
         const parent = canvas;
@@ -204,11 +204,11 @@
       <div bind:this={canvas} class="overflow-hidden absolute h-full -left-[20%] w-[140%] -z-10 flex justify-center">
       </div>
 
-      <div class="w-full max-w-6xl flex flex-col relative h-full mx-auto px-6 lg:px-0">
+      <div class="w-full max-w-6xl flex flex-col justify-center items-end relative h-full mx-auto px-6 lg:px-0">
           <MaskedText
               snapshot={noiseSnapshot}
               bgElement={canvas}
-              wrapperClass="absolute top-[50%] -translate-y-1/2 right-0 text-right p-6"
+              wrapperClass="text-right p-6"
               let:colorClass
           >
               <h3 class="mb-4 {colorClass}">Was mich antreibt</h3>

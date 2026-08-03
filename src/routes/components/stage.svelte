@@ -11,11 +11,10 @@
             class="overflow-hidden absolute h-full -left-[20%] w-[140%] -z-10 bg-cover bg-center"
             style="background-image: url({waveSnapshot});"
         ></div>
-        <div class="w-full max-w-6xl flex flex-col relative h-full mx-auto px-6 lg:px-0">
+        <div class="w-full max-w-6xl flex flex-col justify-center relative h-full mx-auto px-6 lg:px-0">
            <MaskedText
                 snapshot={waveSnapshot}
                 bgElement={waveBgDiv}
-                wrapperClass="absolute top-[50%] -translate-y-1/2"
                 let:colorClass
             >
                 <h3 class="mb-4 {colorClass}">Hi, Ich bin Laura</h3>
@@ -27,7 +26,7 @@
                     <br> Ich mag Projekte, bei denen Technik und Kreativität sich nicht ausschließen müssen.
             </MaskedText>
 
-            <div class="flex gap-3  mt-8 z-10 absolute min-[500px]:bottom-6 bottom-4">
+            <div class="flex gap-3 mt-8 z-10">
                 <TextButton text="Say hello" icon="mail" on:click={() => handleScroll()}/>                
                 <IconButton icon="github"/>
                 <IconButton icon="linkedin"/>

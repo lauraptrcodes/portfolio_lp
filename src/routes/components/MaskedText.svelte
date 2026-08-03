@@ -1,12 +1,10 @@
 <script>
     import { onMount } from 'svelte';
 
-    // Data-URL eines Hintergrund-Snapshots (z.B. von einer Three.js-Canvas)
     export let snapshot = '';
-    // DOM-Element des sichtbaren Hintergrunds, an dem sich die Maske ausrichtet
-    // (kann eine andere Größe/Position haben als diese Komponente selbst)
     export let bgElement = null;
-    // Positionierungs-Klassen, die BEIDE Textebenen bekommen (Ausrichtung liegt beim Aufrufer)
+    // Nur noch für Ausrichtungs-Klassen wie "text-right" gedacht — KEINE
+    // absolute Positionierung mehr nötig, die übernimmt die Komponente jetzt selbst
     export let wrapperClass = '';
 
     let anchor;
@@ -16,21 +14,22 @@
     let maskOffsetY = 0;
     let invertedSnapshot = '';
     let isMobile = false;
-
-    // Eindeutige ID, damit mehrere <MaskedText>-Instanzen auf derselben Seite
-    // sich nicht gegenseitig ihre SVG-Masken überschreiben
-    //const maskId = `wave-mask-${Math.random().toString(36).slice(2, 9)}`;
+    let lastInvertTime = 0;
 
     function invertSnapshot(src) {
-        if (!src || isMobile) return;
+        if (!src) return;
+        const now = performance.now();
+        const minInterval = isMobile ? 800 : 0;
+        if (now - lastInvertTime < minInterval) return;
+        lastInvertTime = now;
+
         const img = new Image();
         img.onload = () => {
             const c = document.createElement('canvas');
-            c.width = img.naturalWidth;
-            c.height = img.naturalHeight;
-            /*const scale = 300 / img.naturalWidth;
-            c.width = img.naturalWidth * scale;
-            c.height = img.naturalHeight * scale;*/
+            const targetWidth = isMobile ? 120 : 300;
+            //const scale = targetWidth / img.naturalWidth;
+            c.width = img.naturalWidth;// * scale;
+            c.height = img.naturalHeight;// * scale;
             const ctx = c.getContext('2d');
             ctx.drawImage(img, 0, 0, c.width, c.height);
             const imageData = ctx.getImageData(0, 0, c.width, c.height);
@@ -39,7 +38,6 @@
                 data[i] = 255 - data[i];
                 data[i + 1] = 255 - data[i + 1];
                 data[i + 2] = 255 - data[i + 2];
-                // Alpha (data[i+3]) bleibt unverändert
             }
             ctx.putImageData(imageData, 0, 0);
             invertedSnapshot = c.toDataURL('image/png');
@@ -61,8 +59,6 @@
 
     onMount(() => {
         isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-        //isMobile = true;
-
         updateMaskAlignment();
 
         const resizeObserver = new ResizeObserver(updateMaskAlignment);
@@ -75,42 +71,41 @@
         };
     });
 
-    // Neu ausrichten, sobald beide Referenzen (nach dem ersten Render) verfügbar sind
     $: if (bgElement && anchor) updateMaskAlignment();
 </script>
-<!-- Blaue Ebene: sichtbar, wo der Snapshot hell ist. Gibt per normalem Textfluss
-     gleichzeitig die reale Größe/Position vor, an der sich die Maske orientiert -->
 
-{#if isMobile}
-     <div bind:this={anchor} class="{wrapperClass} mix-blend-multiply">
-        <!--<slot/> !text-portfolio-blue-->
-        <slot/>
-        <!--<slot colorClass="!text-portfolio-blue " />-->
-     </div>
- {:else}
-      <!-- die bisherigen zwei gemaskten Ebenen, unverändert -->
-<div
-    bind:this={anchor}
-    class={wrapperClass}
-    style="mask-image: url({snapshot}); -webkit-mask-image: url({snapshot});
-           mask-mode: luminance; -webkit-mask-mode: luminance;
-           mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
-           mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
-           mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
->
-    <slot colorClass="!text-portfolio-blue"/>
-    <!--<slot />-->
-</div>
+<!-- Äußerer Wrapper: nimmt echten Platz im Layout-Fluss ein (Größe kommt vom
+     unsichtbaren Platzhalter unten), dadurch verhält sich MaskedText wie ein
+     normales Flex-/Block-Element — Geschwister-Elemente (z.B. Buttons) können
+     sich per margin/gap relativ dazu positionieren -->
+<div class="relative {wrapperClass}">
+    <!-- Unsichtbarer Platzhalter: gibt dem Wrapper seine reale Höhe/Breite -->
+    <div class="invisible" aria-hidden="true">
+        <slot colorClass="" />
+    </div>
 
-<!-- Weiße Ebene: identisch positioniert, per invertierter Maske sichtbar wo der Snapshot dunkel ist -->
-<div
-    class={wrapperClass}
-    style="mask-image: url({invertedSnapshot}); -webkit-mask-image: url({invertedSnapshot});
-            mask-mode: luminance; -webkit-mask-mode: luminance;
-            mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
-            mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
-            mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
->
-    <slot colorClass="!text-portfolio-white" />
+    <!-- Blaue Ebene: sichtbar, wo der Hintergrund hell ist -->
+    <div
+        bind:this={anchor}
+        class="absolute inset-0"
+        style="mask-image: url({snapshot}); -webkit-mask-image: url({snapshot});
+               mask-mode: luminance; -webkit-mask-mode: luminance;
+               mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
+               mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
+               mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
+    >
+        <slot colorClass="!text-portfolio-blue" />
+    </div>
+
+    <!-- Weiße Ebene: sichtbar, wo der Hintergrund dunkel ist -->
+    <div
+        class="absolute inset-0"
+        style="mask-image: url({invertedSnapshot}); -webkit-mask-image: url({invertedSnapshot});
+                mask-mode: luminance; -webkit-mask-mode: luminance;
+                mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
+                mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
+                mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
+    >
+        <slot colorClass="!text-portfolio-white" />
+    </div>
 </div>
-{/if}
