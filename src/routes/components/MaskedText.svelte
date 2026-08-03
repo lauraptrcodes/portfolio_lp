@@ -15,21 +15,22 @@
     let maskOffsetX = 0;
     let maskOffsetY = 0;
     let invertedSnapshot = '';
+    let isMobile = false;
 
     // Eindeutige ID, damit mehrere <MaskedText>-Instanzen auf derselben Seite
     // sich nicht gegenseitig ihre SVG-Masken überschreiben
     //const maskId = `wave-mask-${Math.random().toString(36).slice(2, 9)}`;
 
     function invertSnapshot(src) {
-        if (!src) return;
+        if (!src || isMobile) return;
         const img = new Image();
         img.onload = () => {
             const c = document.createElement('canvas');
-          /*  c.width = img.naturalWidth;
-            c.height = img.naturalHeight;*/
-            const scale = 300 / img.naturalWidth;
+            c.width = img.naturalWidth;
+            c.height = img.naturalHeight;
+            /*const scale = 300 / img.naturalWidth;
             c.width = img.naturalWidth * scale;
-            c.height = img.naturalHeight * scale;
+            c.height = img.naturalHeight * scale;*/
             const ctx = c.getContext('2d');
             ctx.drawImage(img, 0, 0, c.width, c.height);
             const imageData = ctx.getImageData(0, 0, c.width, c.height);
@@ -59,6 +60,9 @@
     }
 
     onMount(() => {
+        isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+        //isMobile = true;
+
         updateMaskAlignment();
 
         const resizeObserver = new ResizeObserver(updateMaskAlignment);
@@ -76,6 +80,15 @@
 </script>
 <!-- Blaue Ebene: sichtbar, wo der Snapshot hell ist. Gibt per normalem Textfluss
      gleichzeitig die reale Größe/Position vor, an der sich die Maske orientiert -->
+
+{#if isMobile}
+     <div bind:this={anchor} class="{wrapperClass} mix-blend-multiply">
+        <!--<slot/> !text-portfolio-blue-->
+        <slot/>
+        <!--<slot colorClass="!text-portfolio-blue " />-->
+     </div>
+ {:else}
+      <!-- die bisherigen zwei gemaskten Ebenen, unverändert -->
 <div
     bind:this={anchor}
     class={wrapperClass}
@@ -85,7 +98,8 @@
            mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
            mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
 >
-    <slot />
+    <slot colorClass="!text-portfolio-blue"/>
+    <!--<slot />-->
 </div>
 
 <!-- Weiße Ebene: identisch positioniert, per invertierter Maske sichtbar wo der Snapshot dunkel ist -->
@@ -99,3 +113,4 @@
 >
     <slot colorClass="!text-portfolio-white" />
 </div>
+{/if}
