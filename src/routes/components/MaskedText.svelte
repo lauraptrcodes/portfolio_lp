@@ -3,8 +3,8 @@
 
     export let snapshot = '';
     export let bgElement = null;
-    // Nur noch für Ausrichtungs-Klassen wie "text-right" gedacht — KEINE
-    // absolute Positionierung mehr nötig, die übernimmt die Komponente jetzt selbst
+    // Nur noch für Ausrichtungs-Klassen wie "text-right" gedacht — die
+    // Positionierung selbst übernimmt die Komponente über den relative-Wrapper
     export let wrapperClass = '';
 
     let anchor;
@@ -17,19 +17,18 @@
     let lastInvertTime = 0;
 
     function invertSnapshot(src) {
-        if (!src) return;
+        if (!src || isMobile) return; // Mobile nutzt den günstigeren mix-blend-mode-Pfad, siehe unten
+
         const now = performance.now();
-        const minInterval = isMobile ? 800 : 0;
-        if (now - lastInvertTime < minInterval) return;
+        if (now - lastInvertTime < 0) return;
         lastInvertTime = now;
 
         const img = new Image();
         img.onload = () => {
             const c = document.createElement('canvas');
-            const targetWidth = isMobile ? 120 : 300;
-            //const scale = targetWidth / img.naturalWidth;
+            //const scale = 300 / img.naturalWidth;
             c.width = img.naturalWidth;// * scale;
-            c.height = img.naturalHeight;// * scale;
+            c.height = img.naturalHeight; // * scale;
             const ctx = c.getContext('2d');
             ctx.drawImage(img, 0, 0, c.width, c.height);
             const imageData = ctx.getImageData(0, 0, c.width, c.height);
@@ -40,12 +39,37 @@
                 data[i + 2] = 255 - data[i + 2];
             }
             ctx.putImageData(imageData, 0, 0);
-            invertedSnapshot = c.toDataURL('image/png');
+            const resultUrl = c.toDataURL('image/png');
+
+            // Vor der Zuweisung fertig decodieren, damit der Browser die neue
+            // Maske sofort ohne Verzögerung malen kann (verhindert Flackern
+            // durch Decode-während-Paint)
+            const verify = new Image();
+            verify.src = resultUrl;
+            const apply = () => { invertedSnapshot = resultUrl; };
+            if (verify.decode) verify.decode().then(apply).catch(apply);
+            else { verify.onload = apply; verify.onerror = apply; }
         };
         img.src = src;
     }
 
     $: invertSnapshot(snapshot);
+
+    // Auch die "blaue" Maskenquelle (roher Snapshot) vor Verwendung decodieren
+    let decodedSnapshot = '';
+    async function decodeForMask(src) {
+        if (!src) return;
+        try {
+            const img = new Image();
+            img.src = src;
+            if (img.decode) await img.decode();
+            else await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+        } catch (e) {
+            // egal, trotzdem anzeigen
+        }
+        decodedSnapshot = src;
+    }
+    $: decodeForMask(snapshot);
 
     function updateMaskAlignment() {
         if (!bgElement || !anchor) return;
@@ -58,6 +82,7 @@
     }
 
     onMount(() => {
+        //isMobile = true;
         isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
         updateMaskAlignment();
 
@@ -75,37 +100,48 @@
 </script>
 
 <!-- Äußerer Wrapper: nimmt echten Platz im Layout-Fluss ein (Größe kommt vom
-     unsichtbaren Platzhalter unten), dadurch verhält sich MaskedText wie ein
-     normales Flex-/Block-Element — Geschwister-Elemente (z.B. Buttons) können
-     sich per margin/gap relativ dazu positionieren -->
+     unsichtbaren Platzhalter unten) — Geschwister-Elemente (z.B. Buttons)
+     können sich per margin/gap relativ dazu positionieren -->
 <div class="relative {wrapperClass}">
     <!-- Unsichtbarer Platzhalter: gibt dem Wrapper seine reale Höhe/Breite -->
     <div class="invisible" aria-hidden="true">
         <slot colorClass="" />
     </div>
 
-    <!-- Blaue Ebene: sichtbar, wo der Hintergrund hell ist -->
-    <div
-        bind:this={anchor}
-        class="absolute inset-0"
-        style="mask-image: url({snapshot}); -webkit-mask-image: url({snapshot});
-               mask-mode: luminance; -webkit-mask-mode: luminance;
-               mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
-               mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
-               mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
-    >
-        <slot colorClass="!text-portfolio-blue" />
-    </div>
+    {#if isMobile}
+        <!-- Mobile: eine einzige Ebene mit mix-blend-mode statt zweier
+             gemaskter Ebenen — kein Pixel-Invertieren pro Frame nötig -->
+        <div
+            bind:this={anchor}
+            class="absolute inset-0"
+            style="mix-blend-mode: multiply;"
+        >
+            <slot />
+        </div>
+    {:else}
+        <!-- Desktop: zwei exakt maskierte Ebenen (blau über hellem, weiß
+             über dunklem Bereich) -->
+        <div
+            bind:this={anchor}
+            class="absolute inset-0"
+            style="mask-image: url({decodedSnapshot}); -webkit-mask-image: url({decodedSnapshot});
+                   mask-mode: luminance; -webkit-mask-mode: luminance;
+                   mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
+                   mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
+                   mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
+        >
+            <slot colorClass="!text-portfolio-blue" />
+        </div>
 
-    <!-- Weiße Ebene: sichtbar, wo der Hintergrund dunkel ist -->
-    <div
-        class="absolute inset-0"
-        style="mask-image: url({invertedSnapshot}); -webkit-mask-image: url({invertedSnapshot});
-                mask-mode: luminance; -webkit-mask-mode: luminance;
-                mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
-                mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
-                mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
-    >
-        <slot colorClass="!text-portfolio-white" />
-    </div>
+        <div
+            class="absolute inset-0"
+            style="mask-image: url({invertedSnapshot}); -webkit-mask-image: url({invertedSnapshot});
+                    mask-mode: luminance; -webkit-mask-mode: luminance;
+                    mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
+                    mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
+                    mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
+        >
+            <slot colorClass="!text-portfolio-white" />
+        </div>
+    {/if}
 </div>
