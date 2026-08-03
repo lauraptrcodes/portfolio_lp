@@ -12,7 +12,7 @@
             style="background-image: url({waveSnapshot});"
         ></div>
         <div class="w-full max-w-6xl flex flex-col relative h-full mx-auto px-6 lg:px-0">
-            <MaskedText
+           <!-- <MaskedText
                 snapshot={waveSnapshot}
                 bgElement={waveBgDiv}
                 wrapperClass="absolute top-[50%] -translate-y-1/2"
@@ -25,7 +25,7 @@
                 <p class="mt-8 {colorClass}"> 
                     Von Fullstack-Anwendungen bis zu Echtzeit-Audio-Plugins in C++,
                     <br> Ich mag Projekte, bei denen Technik und Kreativität sich nicht ausschließen müssen.
-            </MaskedText>
+            </MaskedText>-->
 
             <div class="flex gap-3  mt-8 z-10 absolute min-[500px]:bottom-6 bottom-4">
                 <TextButton text="Say hello" icon="mail" on:click={() => handleScroll()}/>                

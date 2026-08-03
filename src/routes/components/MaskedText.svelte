@@ -18,16 +18,18 @@
 
     // Eindeutige ID, damit mehrere <MaskedText>-Instanzen auf derselben Seite
     // sich nicht gegenseitig ihre SVG-Masken überschreiben
-    const maskId = `wave-mask-${Math.random().toString(36).slice(2, 9)}`;
+    //const maskId = `wave-mask-${Math.random().toString(36).slice(2, 9)}`;
 
     function invertSnapshot(src) {
         if (!src) return;
         const img = new Image();
         img.onload = () => {
             const c = document.createElement('canvas');
+          /*  c.width = img.naturalWidth;
+            c.height = img.naturalHeight;*/
             const scale = 300 / img.naturalWidth;
-            c.width = Math.round(img.naturalWidth * scale);
-            c.height = Math.round(img.naturalHeight * scale);
+            c.width = img.naturalWidth * scale;
+            c.height = img.naturalHeight * scale;
             const ctx = c.getContext('2d');
             ctx.drawImage(img, 0, 0, c.width, c.height);
             const imageData = ctx.getImageData(0, 0, c.width, c.height);
