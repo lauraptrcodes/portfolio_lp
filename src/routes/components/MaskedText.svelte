@@ -25,10 +25,11 @@
         const img = new Image();
         img.onload = () => {
             const c = document.createElement('canvas');
-            c.width = img.naturalWidth;
-            c.height = img.naturalHeight;
+            const scale = 300 / img.naturalWidth;
+            c.width = Math.round(img.naturalWidth * scale);
+            c.height = Math.round(img.naturalHeight * scale);
             const ctx = c.getContext('2d');
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, c.width, c.height);
             const imageData = ctx.getImageData(0, 0, c.width, c.height);
             const data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {

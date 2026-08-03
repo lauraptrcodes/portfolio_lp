@@ -8,7 +8,7 @@
     // Ruft bei jedem Snapshot mit der aktuellen Canvas als Data-URL auf
     export let onSnapshot = () => {};
     // Wie oft (in ms) ein neuer Snapshot gezogen wird
-    export let snapshotInterval = 120;
+    export let snapshotInterval = ('ontouchstart' in window) ? 250 : 120;
 
     // --- Konfiguration der Welle ---
     const WAVE_COLOR = '#0442bf';
@@ -32,17 +32,11 @@
 
         const renderer = new THREE.WebGLRenderer({ alpha: true, preserveDrawingBuffer: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setClearColor(0xffffff, 1); // opakes Weiß statt Transparenz —
-        // nötig, damit luminanzbasiertes CSS-Masking (siehe stage.svelte) den
-        // "leeren" Bereich als echtes Weiß erkennt statt als Transparent/Schwarz
+        renderer.setClearColor(0xffffff, 1); 
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.NoToneMapping;
         container.appendChild(renderer.domElement);
 
-        // Die Canvas selbst bleibt unsichtbar — sichtbar ist stattdessen das
-        // periodisch aktualisierte Snapshot-Bild (siehe animate()), gegen das
-        // sich mix-blend-mode/CSS-Masken zuverlässig anwenden lässt (im
-        // Gegensatz zur Live-Canvas, die dafür browserübergreifend inkonsistent ist)
         renderer.domElement.style.opacity = '0';
 
         // Berechnet die sichtbare Breite bei z=0 (wo die Wellen liegen) für die aktuelle Kamera
