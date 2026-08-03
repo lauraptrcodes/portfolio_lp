@@ -61,9 +61,9 @@
         uniforms: {
         uTime: { value: 0.0 },
         uScale: { value: 1.0 },
-        uSpeed: { value: 0.01},
-        uThreshold: { value: 0.6 },
-        uThreshold2: { value: 0.01 },
+        uSpeed: { value: 0.005},
+        uThresholdSpeed: { value: 0.1 }, // wie schnell sich das Band wiederholt durchläuft
+        uBandWidth: { value: 0.33 }, 
         uMouse: { value: new THREE.Vector2(0.5, 0.5) },
         //uColor2: { value: new THREE.Color(0x00aaff) },
         uColor2: { value: new THREE.Color(0x0442BF)},
@@ -83,13 +83,13 @@
             uniform float uScale;
             uniform float uSpeed;
             uniform float uTime;
-            uniform float uThreshold;
-            uniform float uThreshold2;
             uniform vec3 uColor;
             uniform vec3 uColor2;
             uniform float uPixelSize;
             uniform vec2 uMouse;
             uniform vec2 uResolution;
+            uniform float uThresholdSpeed;
+            uniform float uBandWidth;
 
             // Simple Perlin noise (GLSL)
             vec2 hash(vec2 p) {
@@ -128,12 +128,14 @@
             float influence = smoothstep(radius, 0.0, dist);
             vec2  displaced = pixelUV - normalize(delta) * influence * strength;
 
-            float n = noise(displaced * 4.0 + uTime * 0.1);
+            float n = noise(displaced * 2.5 + uTime * 0.1);
+            float thresholdPhase = fract(uTime * uThresholdSpeed);
 
-            // Threshold
-            vec3 color = vec3(1.0);
-            if(n < uThreshold && n > uThreshold2) color = uColor2;
-            else if (n > uThreshold) color = uColor;
+            float nWrapped = fract(n);
+            float diff = abs(nWrapped - thresholdPhase);
+            float circularDist = min(diff, 1.0 - diff);
+
+            vec3 color = (circularDist < uBandWidth * 0.5) ? uColor2 : uColor;
             gl_FragColor = vec4(pow(color, vec3(1.0/2.2)),1.0);
             }
         `
@@ -170,10 +172,6 @@
         let lastSnapshotTime = 0;
         function animate(time) {
           animationId = requestAnimationFrame(animate);
-          
-          //material.uniforms.uThreshold.value += time * 0.000001;
-          //material.uniforms.uThreshold.value = (material.uniforms.uThreshold.value + time * 0.00000001) % 1;
-          //material.uniforms.uThreshold2.value = (material.uniforms.uThreshold2.value + time * 0.00000001) % 1;
 
           material.uniforms.uTime.value = time * 0.001;
           smoothMouse.lerp(mouse, 0.08);
@@ -214,8 +212,8 @@
               let:colorClass
           >
               <h3 class="mb-4 {colorClass}">Was mich antreibt</h3>
-              <h2 class="mb-4 {colorClass}">User centered Design</h2>
-              <p class="mt-4 {colorClass}">Neugier, gutes Design und der Drang, Dinge<br>zu bauen, die es so noch nicht gibt.</p>
+              <h2 class="mb-4 {colorClass}">Neugier. Nutzerfokus. <br>Sauberer Code.</h2>
+              <p class="mt-4 {colorClass}">Immer wieder Neues lernen, <br>für Menschen entwickeln statt nur für die Anforderung, <br>und Code hinterlassen, den auch die nächste Person versteht.</p>
           </MaskedText>
       </div>
   </Section>

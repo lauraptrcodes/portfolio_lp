@@ -14,10 +14,36 @@
     let maskHeight = 0;
     let maskOffsetX = 0;
     let maskOffsetY = 0;
+    let invertedSnapshot = '';
 
     // Eindeutige ID, damit mehrere <MaskedText>-Instanzen auf derselben Seite
     // sich nicht gegenseitig ihre SVG-Masken überschreiben
     const maskId = `wave-mask-${Math.random().toString(36).slice(2, 9)}`;
+
+    function invertSnapshot(src) {
+        if (!src) return;
+        const img = new Image();
+        img.onload = () => {
+            const c = document.createElement('canvas');
+            c.width = img.naturalWidth;
+            c.height = img.naturalHeight;
+            const ctx = c.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            const imageData = ctx.getImageData(0, 0, c.width, c.height);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = 255 - data[i];
+                data[i + 1] = 255 - data[i + 1];
+                data[i + 2] = 255 - data[i + 2];
+                // Alpha (data[i+3]) bleibt unverändert
+            }
+            ctx.putImageData(imageData, 0, 0);
+            invertedSnapshot = c.toDataURL('image/png');
+        };
+        img.src = src;
+    }
+
+    $: invertSnapshot(snapshot);
 
     function updateMaskAlignment() {
         if (!bgElement || !anchor) return;
@@ -45,23 +71,6 @@
     // Neu ausrichten, sobald beide Referenzen (nach dem ersten Render) verfügbar sind
     $: if (bgElement && anchor) updateMaskAlignment();
 </script>
-
-<!-- Unsichtbares SVG nur für die Masken-Definition dieser Instanz -->
-<svg width="0" height="0" class="absolute">
-    <filter id="{maskId}-invert">
-        <feColorMatrix type="matrix" values="
-            -1 0 0 0 1
-            0 -1 0 0 1
-            0 0 -1 0 1
-            0 0 0 1 0" />
-    </filter>
-    <mask id={maskId} maskUnits="userSpaceOnUse"
-        x={maskOffsetX} y={maskOffsetY} width={maskWidth} height={maskHeight}>
-        <image href={snapshot} x={maskOffsetX} y={maskOffsetY} width={maskWidth} height={maskHeight}
-            preserveAspectRatio="none" filter="url(#{maskId}-invert)" />
-    </mask>
-</svg>
-
 <!-- Blaue Ebene: sichtbar, wo der Snapshot hell ist. Gibt per normalem Textfluss
      gleichzeitig die reale Größe/Position vor, an der sich die Maske orientiert -->
 <div
@@ -79,7 +88,11 @@
 <!-- Weiße Ebene: identisch positioniert, per invertierter Maske sichtbar wo der Snapshot dunkel ist -->
 <div
     class={wrapperClass}
-    style="mask: url(#{maskId}); -webkit-mask: url(#{maskId});"
+    style="mask-image: url({invertedSnapshot}); -webkit-mask-image: url({invertedSnapshot});
+            mask-mode: luminance; -webkit-mask-mode: luminance;
+            mask-size: {maskWidth}px {maskHeight}px; -webkit-mask-size: {maskWidth}px {maskHeight}px;
+            mask-position: {maskOffsetX}px {maskOffsetY}px; -webkit-mask-position: {maskOffsetX}px {maskOffsetY}px;
+            mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"
 >
     <slot colorClass="!text-portfolio-white" />
 </div>

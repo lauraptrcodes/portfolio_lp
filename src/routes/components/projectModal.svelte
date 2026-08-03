@@ -27,10 +27,10 @@
     >
         <div
             class="relative w-full bg-portfolio-white rounded-lg shadow-2xl overflow-y-auto"
-            style="max-width: min(1440px, 92vw); max-height: min(1440px, 90vh);"
+            style="max-width: min(1152px, 90vw); max-height: min(1440px, 90vh);"
         >
             <button
-                class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-portfolio-dark text-portfolio-white text-2xl leading-none opacity-80 hover:opacity-70 transition cursor-pointer"
+                class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-portfolio-dark !text-portfolio-white text-2xl leading-none opacity-80 hover:opacity-70 transition cursor-pointer"
                 onclick={onClose}
                 aria-label="Schließen"
             >   
@@ -40,7 +40,7 @@
                 
             </button>
 
-            <div class="w-full h-64 md:h-96 bg-portfolio-gray overflow-hidden">
+            <div class="w-full h-64 md:h-96 bg-black overflow-hidden">
                 {#if project.video}
                     <video
                         src={project.video}
@@ -48,7 +48,7 @@
                         muted
                         loop
                         playsinline
-                        class="w-full h-full object-cover"
+                        class="h-full m-auto object-contain"
                     ></video>
                 {:else if project.image}
                     <img src={project.image} alt={project.title} class="w-full h-full object-cover" />

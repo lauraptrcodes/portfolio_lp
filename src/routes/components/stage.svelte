@@ -18,16 +18,16 @@
                 wrapperClass="absolute top-[50%] -translate-y-1/2"
                 let:colorClass
             >
-                <h3 class="mb-4 {colorClass}">Hi, I'm Laura</h3>
-                <h2 class="{colorClass}">Software engineer <br>& creative developer 
+                <h3 class="mb-4 {colorClass}">Hi, Ich bin Laura</h3>
+                <h2 class="{colorClass}">Software-Entwicklerin <br>& Creative Technologist 
                 </h2>
 
-                <p class="mt-8 {colorClass}">Wer ich bin, was ich mache, wofür ich mich interessiere.
-                    <br> Ich programmiere alles und brauche dringend geld, bla bla.
-                </p>
+                <p class="mt-8 {colorClass}"> 
+                    Von Fullstack-Anwendungen bis zu Echtzeit-Audio-Plugins in C++,
+                    <br> Ich mag Projekte, bei denen Technik und Kreativität sich nicht ausschließen müssen.
             </MaskedText>
 
-            <div class="flex gap-3  mt-8 z-10 absolute bottom-8">
+            <div class="flex gap-3  mt-8 z-10 absolute md:bottom-8 bottom-6">
                 <TextButton text="Say hello" icon="mail" on:click={() => handleScroll()}/>                
                 <IconButton icon="github"/>
                 <IconButton icon="linkedin"/>
