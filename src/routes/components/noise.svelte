@@ -20,7 +20,7 @@
     // Data-URL eines periodischen Canvas-Snapshots, den MaskedText für die
     // Text-Maskierung nutzt (die sichtbare Canvas selbst bleibt unverändert live)
     let noiseSnapshot = '';
-    const snapshotInterval = 120;
+    const snapshotInterval = 200;
 
 
 

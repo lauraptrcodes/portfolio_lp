@@ -74,7 +74,7 @@
     let invertedSnapshot = '';
     let isMobile = false;
     let lastProcessTime = 0;
-    const minProcessInterval = 800;
+    const minProcessInterval = 200;
     //const minProcessInterval = 800; // ms zwischen zwei Masken-Updates
 
     async function decodeImage(src) {

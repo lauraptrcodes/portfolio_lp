@@ -8,7 +8,7 @@
     // Ruft bei jedem Snapshot mit der aktuellen Canvas als Data-URL auf
     export let onSnapshot = () => {};
     // Wie oft (in ms) ein neuer Snapshot gezogen wird
-    const snapshotInterval = 120;
+    const snapshotInterval = 200;
 
     // --- Konfiguration der Welle ---
     const WAVE_COLOR = '#0442bf';
