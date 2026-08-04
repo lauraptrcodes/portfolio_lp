@@ -74,7 +74,8 @@
     let invertedSnapshot = '';
     let isMobile = false;
     let lastProcessTime = 0;
-    const minProcessInterval = 200; // ms zwischen zwei Masken-Updates
+    const minProcessInterval = 800;
+    //const minProcessInterval = 800; // ms zwischen zwei Masken-Updates
 
     async function decodeImage(src) {
         const img = new Image();
@@ -125,7 +126,7 @@
     }
 
     $: processSnapshot(snapshot);
-    
+
     function updateMaskAlignment() {
         if (!bgElement || !anchor) return;
         const bgRect = bgElement.getBoundingClientRect();
