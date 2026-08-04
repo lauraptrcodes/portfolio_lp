@@ -91,9 +91,9 @@
 
     function invertImage(img) {
         const c = document.createElement('canvas');
-        const scale = 300 / img.naturalWidth;
-        c.width = img.naturalWidth * scale;
-        c.height = img.naturalHeight * scale;
+        //const scale = 300 / img.naturalWidth;
+        c.width = img.naturalWidth; //* scale;
+        c.height = img.naturalHeight; //* scale;
         const ctx = c.getContext('2d');
         ctx.drawImage(img, 0, 0, c.width, c.height);
         const imageData = ctx.getImageData(0, 0, c.width, c.height);
