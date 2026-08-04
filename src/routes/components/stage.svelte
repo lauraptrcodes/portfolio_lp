@@ -11,8 +11,9 @@
             class="overflow-hidden absolute h-full -left-[20%] w-[140%] -z-10 bg-cover bg-center"
             style="background-image: url({waveSnapshot});"
         ></div>
-        <div class="w-full max-w-6xl flex flex-col justify-center relative h-full mx-auto px-6 lg:px-0">
-           <MaskedText
+         <div class="w-full max-w-6xl relative h-full mx-auto px-6 lg:px-0">
+         <div bind:this={textWrapper} class="absolute top-1/2 -translate-y-1/2 w-full">
+          <MaskedText
                 snapshot={waveSnapshot}
                 bgElement={waveBgDiv}
                 let:colorClass
@@ -26,11 +27,16 @@
                     <br> Ich mag Projekte, bei denen Technik und Kreativität sich nicht ausschließen müssen.
             </MaskedText>
 
-            <div class="flex gap-3 mt-8 z-10">
-                <TextButton text="Say hello" icon="mail" on:click={() => handleScroll()}/>                
-                <IconButton icon="github"/>
-                <IconButton icon="linkedin"/>
-            </div>
+            {#if hasButtons}
+                <div
+                    class="flex gap-3 z-10 absolute w-full"
+                    style="top: calc(50% + {textHeight / 2}px + {buttonGap}px);"
+                >
+                    <TextButton text="Say hello" icon="mail" on:click={() => handleScroll()}/>                
+                    <IconButton icon="github"/>
+                    <IconButton icon="linkedin"/>
+                </div>
+            {/if}
         </div>
 </Section>
 </div>
@@ -47,12 +53,30 @@
     import scrollIntoView from 'scroll-into-view-if-needed';
     import MaskedText from './MaskedText.svelte';
     import Section from './Section.svelte';
+    import { onMount } from 'svelte';
 
     // Data-URL des periodischen Wave-Canvas-Snapshots (siehe Scene.svelte)
     let waveSnapshot = '';
 
     /** @type {HTMLDivElement} */
     let waveBgDiv;
+
+    /** @type {HTMLDivElement} */
+    let textWrapper;
+    let textHeight = 0;
+    const buttonGap = 32; // entspricht in etwa "mt-8"
+
+    // Steuert, ob die Button-Zeile überhaupt gerendert wird
+    export let hasButtons = true;
+
+    onMount(() => {
+        if (!textWrapper) return;
+        const observer = new ResizeObserver(([entry]) => {
+            textHeight = entry.contentRect.height;
+        });
+        observer.observe(textWrapper);
+        return () => observer.disconnect();
+    });
 
     async function handleSnapshot(url) {
         const img = new Image();

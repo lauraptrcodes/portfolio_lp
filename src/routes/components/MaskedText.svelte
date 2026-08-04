@@ -12,7 +12,7 @@
     let maskHeight = 0;
     let maskOffsetX = 0;
     let maskOffsetY = 0;
-    let invertedSnapshot = '';
+    /*let invertedSnapshot = '';
     let isMobile = false;
     let lastInvertTime = 0;
 
@@ -69,8 +69,63 @@
         }
         decodedSnapshot = src;
     }
-    $: decodeForMask(snapshot);
+    $: decodeForMask(snapshot);*/
+    let decodedSnapshot = '';
+    let invertedSnapshot = '';
+    let isMobile = false;
+    let lastProcessTime = 0;
+    const minProcessInterval = 200; // ms zwischen zwei Masken-Updates
 
+    async function decodeImage(src) {
+        const img = new Image();
+        img.src = src;
+        try {
+            if (img.decode) await img.decode();
+            else await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+        } catch (e) {
+            // egal, trotzdem weitermachen
+        }
+        return img;
+    }
+
+    function invertImage(img) {
+        const c = document.createElement('canvas');
+        const scale = 300 / img.naturalWidth;
+        c.width = img.naturalWidth * scale;
+        c.height = img.naturalHeight * scale;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        const imageData = ctx.getImageData(0, 0, c.width, c.height);
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+            data[i] = 255 - data[i];
+            data[i + 1] = 255 - data[i + 1];
+            data[i + 2] = 255 - data[i + 2];
+        }
+        ctx.putImageData(imageData, 0, 0);
+        return c.toDataURL('image/png');
+    }
+
+    // Berechnet BEIDE Maskenbilder und aktualisiert beide State-Variablen
+    // GEMEINSAM, im selben synchronen Block — verhindert das Flackern durch
+    // asynchron auseinanderlaufende Updates der zwei Ebenen
+    async function processSnapshot(src) {
+        if (!src || isMobile) return;
+
+        const now = performance.now();
+        if (now - lastProcessTime < minProcessInterval) return;
+        lastProcessTime = now;
+
+        const normalImg = await decodeImage(src);
+        const invertedUrl = invertImage(normalImg);
+        const invertedImg = await decodeImage(invertedUrl);
+
+        decodedSnapshot = src;
+        invertedSnapshot = invertedImg.src;
+    }
+
+    $: processSnapshot(snapshot);
+    
     function updateMaskAlignment() {
         if (!bgElement || !anchor) return;
         const bgRect = bgElement.getBoundingClientRect();
