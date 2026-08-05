@@ -1,11 +1,20 @@
 <script>
-    //export let title = "default title";
-    //export let video = "";
+    import { onMount } from 'svelte';
+    
     export let project;
     export let onSelect = () => {};
 
+    //safari oder mobile
+    let isUnsupportedBrowser = false;
+
     /** @type {HTMLVideoElement} */
     let videoEl;
+
+    onMount(() => {
+        const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        isUnsupportedBrowser = isTouchDevice || isSafari;
+    });
 
     function handleMouseEnter() {
         videoEl?.play();
@@ -27,7 +36,7 @@
      tabindex="0"
      onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelect(project); }}>    
      <div class="project-card relative h-full">
-        {#if project.video}
+        {#if project.video && !isUnsupportedBrowser}
             <video
                 bind:this={videoEl}
                 src={project.video}
@@ -42,7 +51,7 @@
         <img
             src={project.image}
             alt={project.title}
-            class="block md:hidden absolute inset-0 w-full h-full object-cover rounded-lg"
+            class="{isUnsupportedBrowser ? 'block' : 'block md:hidden'} absolute inset-0 w-full h-full object-cover rounded-lg"
         />
         {/if}
         <div class="absolute bottom-2 p-4">

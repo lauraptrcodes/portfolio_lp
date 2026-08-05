@@ -49,6 +49,7 @@
             technologies: ['Angular', 'Java', 'Quarkus', "REST-API"] 
         }
     ];
+
     function openProject(project) {
     selectedProject = project;
     }
