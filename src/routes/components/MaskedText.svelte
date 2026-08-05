@@ -73,8 +73,8 @@
     let decodedSnapshot = '';
     let invertedSnapshot = '';
     let isMobile = false;
-    let lastProcessTime = 0;
-    const minProcessInterval = 200;
+    //let lastProcessTime = 0;
+    //const minProcessInterval = 200;
     //const minProcessInterval = 800; // ms zwischen zwei Masken-Updates
 
     async function decodeImage(src) {
@@ -113,9 +113,9 @@
     async function processSnapshot(src) {
         if (!src || isMobile) return;
 
-        const now = performance.now();
+        /*const now = performance.now();
         if (now - lastProcessTime < minProcessInterval) return;
-        lastProcessTime = now;
+        lastProcessTime = now;*/
 
         const normalImg = await decodeImage(src);
         const invertedUrl = invertImage(normalImg);
