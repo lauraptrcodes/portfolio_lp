@@ -139,7 +139,10 @@
 
     onMount(() => {
         //isMobile = true;
-        isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+        //isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+        const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+        const isNonChromium = !('chrome' in window) || /firefox|fxios/i.test(navigator.userAgent) || /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        isMobile = isTouchDevice || isNonChromium;
         updateMaskAlignment();
 
         const resizeObserver = new ResizeObserver(updateMaskAlignment);
@@ -172,6 +175,7 @@
             class="absolute inset-0"
             style="mix-blend-mode: multiply;"
         >
+            <!--<slot colorClass="!text-portfolio-blue" />-->
             <slot />
         </div>
     {:else}
