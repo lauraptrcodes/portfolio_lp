@@ -33,8 +33,8 @@
                     style="top: calc(50% + {textHeight / 2}px + {buttonGap}px);"
                 >
                     <TextButton text="Say hello" icon="mail" on:click={() => handleScroll()}/>                
-                    <IconButton icon="github"/>
-                    <IconButton icon="linkedin"/>
+                    <IconButton icon="github" link="https://github.com/lauraptrcodes"/>
+                    <IconButton icon="linkedin" link="https://www.linkedin.com/in/laura-peter-53a28123a/"/>
                 </div>
             {/if}
         </div>
