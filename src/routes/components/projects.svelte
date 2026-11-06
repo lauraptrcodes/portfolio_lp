@@ -28,6 +28,14 @@
             technologies: ['svelte', 'Full-stack'] 
         },
         { 
+            title: 'HybridRoom UE5 Plugin', 
+            video: '/assets/videos/hybridroomdemo.mp4', 
+            image:'/assets/images/hybridroom.png', 
+            description: 'Hybride 3D-Raumakustiksimulation für Unreal Engine 5 – entwickelt im Rahmen einer Masterarbeit im Studiengang Musikinformatik. Das System kombiniert wellenbasierte FDTD-Simulation (tiefrequenter Bereich, offline vorberechnet) mit geometrischer Raumakustik via Steam Audio (hochfrequenter Bereich, Echtzeit) und verbindet beide Methoden über einen frequenzbasierten Crossfade an der Schröder-Frequenz.',
+            //description: 'This project only exists as a frontend at the moment and is a project in progress. Aether is a community-curated internet radio, that lets the individuals in the crowd submit their music for the world to hear. Depending on your location, aether shows you new tracks in your area. The platform shows light on underground music and provides listeners with links to the artists music and information for their upcoming gig.', 
+            technologies: ['C++', 'Unreal Engine'] 
+        },
+        { 
             title: 'MetallicDelay with C++', 
             video: '/assets/videos/metallicDelay.mp4', 
             image:'/assets/images/metallicdelay.png', 

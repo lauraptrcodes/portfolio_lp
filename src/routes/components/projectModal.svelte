@@ -49,6 +49,7 @@
                         loop
                         playsinline
                         class="h-full m-auto object-contain"
+                       // style="filter: url(#duotone-blue);"
                     ></video>
                 {:else if project.image}
                     <img src={project.image} alt={project.title} class="w-full h-full object-cover" />
